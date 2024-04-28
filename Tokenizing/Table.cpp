@@ -8,3 +8,8 @@ void Table::setName(std::string name , std::string val) {
 void Table::setId(std::size_t id) {
     this->id.push_back(id);
 }
+
+size_t Table::size()
+{
+    return name.size();
+}

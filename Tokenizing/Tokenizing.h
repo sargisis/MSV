@@ -4,7 +4,6 @@
 #include "Liabrary.h"
 #include "Table.h"
 
-
 class Tokenizing {
 public: 
     Tokenizing(std::ifstream& ob, Table& tbl);
