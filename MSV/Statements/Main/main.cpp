@@ -1,9 +1,9 @@
 #include <iostream>
 #include <fstream>
 
-int main()
+int main(int argc, char * argv[])
 {
-    std::ifstream read("source.msv");
+    std::ifstream read(argv[1]);
 
     if (!read.is_open()) {
         std::cout << "error" << std::endl;
