@@ -25,19 +25,23 @@ void Tokenizing::run(std::ifstream& src , Table& tbl) {
     while( src.good() ) {
         std::getline(src ,line);
         
-        if ( line == "" )
-        {
-            continue;
-        }
+    if ( line == "" ) {
+        continue;
+    }
+    add_space(line);
         
-        // if (  == ";" )
-        // {
-        //     line = line.substr(i);
-        // }
+    std::vector<std::string> v = tokenizing(line);
 
-        // line.pop_back();
-        std::vector<std::string> v = tokenizing(line);
-        v[2].pop_back();
+    if (!v.empty() && v.size() > 2) {
+        v[2].pop_back(); // Remove the last character from the third element
+
+        if (!v[2].empty() && v[2][0] == '\"') {
+            v[2].erase(0, 1); // Erase the first character (starting from index 0)
+            v[2].pop_back(); // Remove the last character
+        }
+    }
+
+        
         tbl.setName(v[0], v[2]);
         tbl.setId(count);
         ++count; 
@@ -46,3 +50,17 @@ void Tokenizing::run(std::ifstream& src , Table& tbl) {
     }
 }
 
+
+void Tokenizing::add_space(std::string & line)
+{   
+    for (size_t i = 0; i < line.size(); i++)
+    {
+        if (line[i] == '=')
+        {
+            line.insert(i, " ");
+            line.insert(i + 2, " ");
+            i++; // Increment i to skip the newly inserted space
+        }
+    }
+}
+    

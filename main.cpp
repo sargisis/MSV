@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
     Tokenizing(read, tbl);
 
     int i = 0;
+    
     while ( i < tbl.size() )
     {
         std::cout << tbl.name_val[i].first << " " << tbl.name_val[i].second << std::endl;
