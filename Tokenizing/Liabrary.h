@@ -5,4 +5,7 @@
 #include <sstream>
 #include <iostream>
 #include <utility>
+#include <functional>
+#include <stdexcept>
+#include <exception>
 

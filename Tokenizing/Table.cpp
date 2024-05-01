@@ -11,30 +11,27 @@ void Table::setName(std::string name , std::string val) {
     std::string digits = "0123456789";
 
     // if variable name don't start ['_', a-z, A-Z] throw runtime_error
-     if ( sym.find(name[0]) == std::string::npos )
-     {  
-        
+     if (sym.find(name[0]) == std::string::npos) {  
+
         std::cout << "Identifier error:" << std::endl
         << "Identifer name must start ['_', 'a-z', 'A-Z']." << std::endl;
         throw std::runtime_error("");
      }
    
-    int count = 0;
+     int count = 0;
     
-     for ( int i = 0; i < name_val.size(); ++i )
-     {
-        if ( name_val[i].first == val )
-        {
+     for (int i = 0; i < name_val.size(); ++i) {
+        
+        if ( name_val[i].first == val ) {
            val = name_val[i].second;
            count = i;
            break;
         }
      }  
 
-    for (size_t i = 0; i < name_val.size(); i++)
-    {
-        if (name == name_val[i].first)
-        {
+    for (size_t i = 0; i < name_val.size(); ++i) {
+       
+        if (name == name_val[i].first)  {
             name_val[i].second = val;
             return;
         }
@@ -42,25 +39,23 @@ void Table::setName(std::string name , std::string val) {
     }
     
     tmp.first = name;
-    tmp.second = val;
+    tmp.second = val; 
     name_val.push_back(tmp);
    
 }
 
-void Table::setId(std::size_t id)
-{
+void Table::setId(std::size_t id) {
     this->id.push_back(id);
 }
 
-size_t Table::size()
-{
+size_t Table::size() {
     return name_val.size();
 }
 
 // Just added
 // std::string Table::findById(std::size_t Id)
 // {
-//     // binary search for id
+//      binary search for id
 //     int start = id.front();
 //     int end = id.back();
     
@@ -70,7 +65,7 @@ size_t Table::size()
         
 //         if ( id[mid] == Id )
 //         {
-//             // return variable's value
+//              return variable's value
 //             return name_val[mid].second;
 //         }
 

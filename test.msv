@@ -4,3 +4,4 @@ p = 0;
 v = "hhh";
 d = 6.6;
 v = b;
+c = when;

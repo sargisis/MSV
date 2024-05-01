@@ -1,6 +1,8 @@
 #include "./Tokenizing/Liabrary.h"
 #include "./Tokenizing/Table.h"
 #include "./Tokenizing/Tokenizing.h"
+#include "./Tokenizing/Keywords.h"
+
 
 int main(int argc, char *argv[])
 {
@@ -18,8 +20,7 @@ int main(int argc, char *argv[])
 
     int i = 0;
     
-    while ( i < tbl.size() )
-    {
+    while ( i < tbl.size() ) {
         std::cout << tbl.name_val[i].first << " " << tbl.name_val[i].second << std::endl;
         ++i;
     }
