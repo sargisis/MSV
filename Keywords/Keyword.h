@@ -1,6 +1,9 @@
-class Keywords
+#ifndef __KEYWORDS__
+#define __KEYWORDS__
+#include "../Includes/Liabrary.h"
+
+class Keyword
 {
-private:
     
 public:
     void when(); // when = if 
@@ -9,8 +12,8 @@ public:
     void write(); // write = std::cin
     void floop(); // floop = for 
     void wloop(); // wloop = while 
-    Keywords(/* args */);
-    ~Keywords();
+    Keyword(/* args */);
+    ~Keyword();
 };
 
-
+#endif
