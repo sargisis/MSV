@@ -1,8 +1,8 @@
 #ifndef __TOKEN__
 #define __TOKEN__
 
-#include "Liabrary.h"
-#include "Table.h"
+#include "../Libraries/Libraries.h"
+#include "../Table/Table.h"
 
 class Tokenizing {
 public: 

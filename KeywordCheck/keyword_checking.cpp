@@ -9,8 +9,6 @@ KeywordCheck::KeywordCheck( Table& tbl )
         {
             if ( tbl.name_val[i].first == keywords[j] || tbl.name_val[i].second == keywords[j] )
             {
-                std::cout << "mtav" << std::endl;
-
                 std::cerr << "error: choose correct name for identifer." << std::endl
                 << "\t ~~ Identifer name can not be a keyword." << std::endl;
                 exit(EXIT_FAILURE);

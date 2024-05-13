@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "../Tokenizing/Table.h"
+#include "../Table/Table.h"
 
 class KeywordCheck
 {

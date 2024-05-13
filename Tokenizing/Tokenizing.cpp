@@ -37,10 +37,10 @@ void Tokenizing::run(std::ifstream& src , Table& tbl) {
         if (!v.empty() && v.size() > 2) {
             v[2].pop_back(); // Remove the last character from the third element
 
-            if (!v[2].empty() && v[2][0] == '\"') {
-                v[2].erase(0, 1); // Erase the first character (starting from index 0)
-                v[2].pop_back(); // Remove the last character
-            }
+            // if (!v[2].empty() && v[2][0] == '\"') {
+            //     v[2].erase(0, 1); // Erase the first character (starting from index 0)
+            //     v[2].pop_back(); // Remove the last character
+            // }
         }
         
         tbl.setName(v[0], v[2]);

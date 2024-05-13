@@ -1,7 +1,7 @@
-#include "./Tokenizing/Liabrary.h"
-#include "./Tokenizing/Table.h"
+#include "./Libraries/Libraries.h"
+#include "./Table/Table.h"
 #include "./Tokenizing/Tokenizing.h"
-#include "./Tokenizing/Keywords.h"
+#include "./Keywords/Keywords.h"
 
 
 int main(int argc, char *argv[])
