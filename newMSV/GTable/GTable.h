@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+std::string deduceType(std::string value);
+
 struct Table
 {
     struct VarInfo
@@ -15,9 +17,9 @@ struct Table
 
     std::vector<VarInfo> table;
 
+    Table();
+    Table(std::vector<std::string> tmp);
     void setTable(std::vector<std::string> tmp);
-    void resolveDeclaration(std::vector<std::string>& vec);
-
 };
 
 #endif  // __GTABLE__

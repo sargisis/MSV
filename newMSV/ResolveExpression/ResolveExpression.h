@@ -11,7 +11,8 @@ class RExpression
 
 
     public:
-        void res_exp(std::vector<std::string> tmp);
+        std::vector<std::string> res_exp(std::vector<std::string> tmp);
+        
 };
 
 #endif  // __RES_EXPRESSION_H__

@@ -12,7 +12,7 @@ class ALU
         double subtract(double first, double second);
         double multiply(double first, double second);
         double divider(double first, double second);
-        double modulo(int first, int second);
+        size_t modulo(int first, int second);
 };
 
 #endif  // __ALU_H__

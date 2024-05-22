@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <stack>
 
 #include "../Library/Library.h"
 
@@ -25,6 +26,8 @@ int main(int argc, char* argv[])
 
     Table vtbl;     // main table
     std::string line;
+    std::stack<std::string> when;
+    Table tmp_table;
 
     while ( file.good() )
     {
@@ -33,17 +36,26 @@ int main(int argc, char* argv[])
         if ( line == "" )
             continue;
 
-        GTable tbl;
+        GTable tbl;     // tmporary table for tokenizer
         GTokenizer tmp(line, tbl);
-        GAST gast(tbl.getLine());
-        vtbl.setTable(tbl.getLine());
+        GAST gast;
+        std::vector<std::string> vec;
+        vec = tbl.getLine();
+        gast.set(vec, vtbl, when, tmp_table);
+        //vtbl.setTable(tbl.getLine());
     }
+
+    std::cout << "---------------------------------------------------------" << std::endl;
+    std::cout << "| Name\t\tValue\t\tType \t\t\t|" << std::endl;
+    std::cout << "|-------------------------------------------------------|" << std::endl;
+
     for ( int i = 0; i < vtbl.table.size(); ++i )
-        {
-            std::cout << vtbl.table[i].name << " "
-            << vtbl.table[i].value << " " << vtbl.table[i].type << std::endl;
-        }
-        std::cout << std::endl;
+    {
+        std::cout << "| " << vtbl.table[i].name << "\t\t"
+        << vtbl.table[i].value << "\t\t" << vtbl.table[i].type
+        << " \t\t\t|" << std::endl;
+    }
+    std::cout << "---------------------------------------------------------" << std::endl;
     return 0;
 }
 

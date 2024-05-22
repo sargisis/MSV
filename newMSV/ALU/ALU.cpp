@@ -20,7 +20,7 @@ double ALU::divider(double first, double second)
     return first / second;
 }
 
-double ALU::modulo(int first, int second)
+size_t ALU::modulo(int first, int second)
 {
     return first % second;
 }

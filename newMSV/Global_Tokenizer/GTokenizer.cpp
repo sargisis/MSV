@@ -35,7 +35,7 @@ void GTokenizer::addspace(std::string& line)
             ++i;
         }
 
-        if ( line[i] == '*' )
+        if ( line[i] == '*' && line[0] != '"' )
         {
             line.insert(i, " ");
             line.insert(i + 2, " ");
@@ -55,8 +55,23 @@ void GTokenizer::addspace(std::string& line)
             line.insert(i + 2, " ");
             ++i;
         }
+
+        if ( line[i] == '(' )
+        {
+            line.insert(i, " ");
+            line.insert(i + 2, " ");
+            ++i;
+        }
+
+        if ( line[i] == ')' )
+        {
+            line.insert(i, " ");
+            line.insert(i + 2, " ");
+            ++i;
+        }
     }
 }
+
 
 void GTokenizer::slicer(std::string line, GTable& tbl)
 {
@@ -72,4 +87,3 @@ void GTokenizer::slicer(std::string line, GTable& tbl)
     tbl.setLine(tmp);
 
 }
-
