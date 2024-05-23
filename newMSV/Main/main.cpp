@@ -41,8 +41,8 @@ int main(int argc, char* argv[])
         GAST gast;
         std::vector<std::string> vec;
         vec = tbl.getLine();
-        gast.set(vec, vtbl, when, tmp_table);
-        //vtbl.setTable(tbl.getLine());
+        gast.set(vec, vtbl);
+        vtbl.setTable(tbl.getLine());
     }
 
     std::cout << "---------------------------------------------------------" << std::endl;
