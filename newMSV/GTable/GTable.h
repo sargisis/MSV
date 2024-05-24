@@ -5,7 +5,7 @@
 #include <string>
 
 std::string deduceType(std::string value);
-
+  
 struct Table
 {
     struct VarInfo
