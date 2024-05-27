@@ -11,7 +11,7 @@ Syntax::Syntax(std::ifstream& write_obj, Table& table, If_Else& if_else_table) /
 void Syntax::run(std::ifstream& write, Table& table, If_Else& if_else_table)
 { 
     std::string line; 
-    int flag_if = 6;
+    int flag_if = 8;
 
     while(write.good()) { //loop to end file
         std::getline(write, line);
@@ -40,19 +40,22 @@ void Syntax::run(std::ifstream& write, Table& table, If_Else& if_else_table)
             }
         }
      
-        //wheni falsi depqum petq e mtni ev ancni bolor toxerov minchev }
+        //wheni falsi depqum petq e mtni EV ANCNI WHENI TOXERI VRAYOV minchev }
         if ((flag_if == 2) && (IF_stack.empty() == true)) {
-                if (vec[0] == "}") {
+                if ((vec[0] == "}" && vec[1] == "otherwise") || vec[0] == "}") {
+                    IF_stack.push_back("{");
                     flag_if = 3;//scope end
                     continue;;
                 } 
             continue;
-                           //true
-        }else if((flag_if == 1) && (IF_stack.back() == "{")) { // the next if body
+        }
+        
+        //WHENI TRUE I JAMANAK MTNUM E STEX
+        if((flag_if == 1) && (IF_stack.back() == "{")) { // the next if body
             if (vec[0] == "}") {
                 IF_stack.pop_back();
                 //if_else_table.Tab.clear();
-                flag_if = 0;
+                flag_if = 6;
                 continue;
             }
             resolve_if_body_variable(vec, table, if_else_table);
@@ -60,37 +63,29 @@ void Syntax::run(std::ifstream& write, Table& table, If_Else& if_else_table)
             continue;
         }
   
-        //Else-i hamar
-        //ete when-@ true e
-        if ((vec[0] == "otherwise" || vec[1] == "otherwise") && flag_if == 0) {           
+        //STEX ETE WHEN@ TRUE E APA MTNUM E ELSE I MEJ EV TOXERI VRAYOV ANCNUM MINCHEV } PAKAGIC U FLAG@ POXUM E 8 VOR SKSI GLOBALI HET ASHXATEL
+        if ((vec[0] == "otherwise" || vec[1] == "otherwise") && flag_if == 6) {           
             continue;
-        }else if (flag_if == 0)
-        {
+        }else if (flag_if == 6) {
             if (vec[0] == "}"){
-                flag_if = 6;
+                flag_if = 8;
             }    
-            continue;
-        }else if ((vec[0] == "otherwise" || vec[1] == "otherwise") && flag_if == 2) {
-            std::cout << vec[0] << std::endl;
-            IF_stack.push_back("{");
-            flag_if = 7;
             continue;
         }
 
         //ete when@ false e
-        if (flag_if == 7) {
+        if (flag_if == 3) {
             if (vec[0] == "}") {
                 IF_stack.pop_back();
                 //if_else_table.Tab.clear();
-                flag_if = 6;
+                flag_if = 8;
                 continue;
             }
             resolve_if_body_variable(vec, table, if_else_table);
             TypeController object(vec, if_else_table, table);
             continue;
         }
-          
-                
+                   
         Resolve_expression(vec, table);
         TypeController object(vec, table);
     }
