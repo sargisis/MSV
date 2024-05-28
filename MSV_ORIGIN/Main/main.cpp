@@ -18,8 +18,9 @@ int main(int argc, char *argv[])
     }
    
     If_Else if_else_table;
+    For for_;
     Table table;
-    Syntax object(read, table, if_else_table);
+    Syntax object(read, table, if_else_table, for_);
 
     for (size_t i = 0; i < table.Tab.size(); i++) {
         std::cout << "global_name = " << table.Tab[i].name << "         " 

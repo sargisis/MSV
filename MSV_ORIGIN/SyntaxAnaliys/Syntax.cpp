@@ -3,15 +3,16 @@
 #include "../Table/Table.h"
 #include "Syntax.h"
 
-Syntax::Syntax(std::ifstream& write_obj, Table& table, If_Else& if_else_table) // ctor called run function
+Syntax::Syntax(std::ifstream& write_obj, Table& table, If_Else& if_else_table ,For& for_) // ctor called run function
 {
-    run(write_obj, table, if_else_table);
+    run(write_obj, table, if_else_table, for_);
 }
 
-void Syntax::run(std::ifstream& write, Table& table, If_Else& if_else_table)
+void Syntax::run(std::ifstream& write, Table& table, If_Else& if_else_table, For& for_)
 { 
     std::string line; 
     int flag_if = 8;
+    int flag_for = 15; 
 
     while(write.good()) { //loop to end file
         std::getline(write, line);
@@ -26,19 +27,43 @@ void Syntax::run(std::ifstream& write, Table& table, If_Else& if_else_table)
         vec = Tokenizing(line);// a = 5 ----> [0] = "a" [1] = "=" [2] = "5"
         Syntax_analysis(vec);//valid variable or not
         
-        
-        
+        if (vec[0] == "floop") {
+            resolve_for_expr(vec, table);
+            if (vec[2] == "(" && vec[14] == ")") {
+                FOR_stack.push_back("{");
+                flag_for = 2; // for_expr true 
+                continue;
+            }else {
+                flag_for = 3; // for_expr false 
+                continue;
+            }
+        }
+
+        if ((vec[2] == "(") && (FOR_stack.back() == "{")) {
+            if (vec[0] == "}") {
+                FOR_stack.pop_back();
+                flag_for = 6;
+                continue;
+            }
+            resolve_for_body_variable(vec , table, for_);
+            TypeController object(vec, for_ , table);
+            continue;
+        }
+
+
         if (vec[0] == "when") {
             resolve_if_expr(vec, table); // check if_expr true or false 
             if ((vec[2] == "1") || (vec[2] == "true")) {
                 IF_stack.push_back("{");
                 flag_if = 1; //if_expr true
-                continue;// nexet line
+                continue;// next line
             }else{
-                flag_if = 2;//false
+                flag_if = 2; //false
                 continue;
             }
         }
+
+
      
         //wheni falsi depqum petq e mtni EV ANCNI WHENI TOXERI VRAYOV minchev }
         if ((flag_if == 2) && (IF_stack.empty() == true)) {
@@ -201,9 +226,8 @@ void Syntax::Resolve_expression(std::vector<std::string>& vec, Table& table)
     if (vec.size() == 3) {
         for (size_t i = 0; i < table.Tab.size(); i++) {
             if (vec[2] == table.Tab[i].name) {
-                vec[2] =  table.Tab[i].value;
+                vec[2] = table.Tab[i].value;
             }            
-   
         }  
     }
 
@@ -353,6 +377,282 @@ std::string Syntax::Eval(std::string unresolved_val, Table& table)
     return unresolved_val;
 }
 
+std::string Syntax::for_Eval(std::string unresolved_val, For& for_, Table& table)
+{   
+
+    for (size_t i = 0; i < for_.Tab.size(); i++) { //ete localum ka uremn da veradarcru
+        if (unresolved_val == for_.Tab[i].name) {
+            return for_.Tab[i].value;
+        }
+    }
+    for (size_t i = 0; i < table.Tab.size(); i++) {// ays depqum globalum nayi ete ka veradarcru
+        if (unresolved_val == table.Tab[i].name) {
+            return table.Tab[i].value;
+        }
+    }
+       
+    return unresolved_val;
+}
+
+void Syntax::resolve_for_expr(std::vector<std::string>& vec, Table& table) {
+       
+       for (size_t i = 0; i < vec.size(); ++i) {
+        if (vec[2] == " " && vec[12] == " ") {
+            FOR_stack.push_back("{");
+            continue;
+        }
+        else if (vec[2] == " " && vec[12] != " ") {
+            throw std::runtime_error("");
+            continue;
+        }
+        else if (vec[6].find(":")) {
+            continue;
+        }
+        else if (vec[6].find(":")) {
+            throw std::runtime_error("");
+            break;
+        }
+        else if (vec[11].find(":")) {
+            continue;
+        }
+        else if (vec[11].find(".")) {
+            throw std::runtime_error("");
+            break;
+        }
+        if (!FOR_stack.empty()) {
+            FOR_stack.pop_back();
+            break;
+        }
+    } 
+    
+    bool res{};
+    bool result{};
+    std::string True_False{};
+    int i = { 1 };
+    i = 1; 
+    i = 1;
+    while (i < vec.size()) {
+        if (vec[9] == "!=") {
+            result = std::stod(Eval(vec[i - 1], table)) != std::stod(Eval(vec[i + 1] , table));
+            if (result == 0) {
+                True_False = "false";
+            } else {
+                True_False = "true";
+            }
+            vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);
+            vec.insert(vec.begin() + i - 1, True_False);
+        }
+        ++i;
+    }
+    i = 1;
+    while (i < vec.size()) {
+        if (vec[9] == "==") {
+            result = std::stod(Eval(vec[i - 1] , table)) == std::stod(Eval(vec[i + 1] , table));
+            if (result == 0) {
+                True_False = "false";
+            } else {
+                True_False = "true";
+            }
+            vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);
+            vec.insert(vec.begin() + i - 1, True_False);
+        }
+        ++i;
+    }
+    i = 1;
+    while (i < vec.size()) {
+        if(vec[9] == "<") {          
+           result = std::stod(Eval(vec[i - 1], table)) < std::stod(Eval(vec[i + 1], table));
+           if (result == 0) {
+               True_False  = "false";
+           } else {
+                True_False = "true";
+           }
+           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);
+           vec.insert(vec.begin() + i - 1, True_False);
+        }
+        ++i;
+    }
+    i = 1;
+    while (i < vec.size()) {
+        if (vec[i] == "<=") {
+            result = std::stod(Eval(vec[i - 1] , table)) <= std::stod(Eval(vec[i + 1] , table));
+            if (result == 0) {
+                True_False = "false";
+            } else {
+                True_False = "True";
+            }
+            vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);
+            vec.insert(vec.begin() + i - 1, True_False);
+        }
+        ++i;
+    }
+    i = 1;
+    while (i < vec.size()) {
+        if (vec[9] == ">") {
+            result = std::stod(Eval(vec[i - 1] , table)) > std::stod(Eval(vec[i + 1] , table));
+            if (result == 0) {
+                True_False = "false";
+            } else {
+                True_False = "true";
+            }
+            vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);
+            vec.insert(vec.begin() + i - 1, True_False);
+        }   
+        ++i;
+    }
+    i = 1;
+    while (i < vec.size()) {
+        if (vec[9] == ">=") {
+            result = std::stod(Eval(vec[i - 1] , table)) >= std::stod(Eval(vec[i + 1] , table));
+            if (result == 0) {
+                True_False = "false";
+            } else {
+                True_False = "true";
+            }
+            vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);
+            vec.insert(vec.begin() + i - 1, True_False);
+        }
+        ++i;
+    }
+}
+
+void Syntax::resolve_for_body_variable(std::vector<std::string>& vec, Table& table, For& for_) {
+
+    double res{};
+    bool result{};
+    std::string True_False{};
+    int i = 3;
+    while (i < vec.size())
+    {
+        if(vec[i] == "*") { 
+           res =  std::stod(for_Eval(vec[i - 1], for_ , table)) * std::stod(for_Eval(vec[i + 1], for_, table));
+           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);
+           std::string tmp_st = std::to_string(res);
+           while (tmp_st.back() == '0') {
+                tmp_st.pop_back();
+           }      
+           if (tmp_st.back() == '.'){
+                tmp_st.pop_back();
+           }    
+           vec.insert(vec.begin() + i - 1, tmp_st);
+           continue;
+        }
+        if(vec[i] == "/") {     
+           res =  std::stod(for_Eval(vec[i - 1],for_, table)) / std::stod(for_Eval(vec[i + 1], for_ , table));
+           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);
+           std::string tmp_st = std::to_string(res);
+           while (tmp_st.back() == '0') {
+                tmp_st.pop_back();
+           }          
+           if (tmp_st.back() == '.'){
+                tmp_st.pop_back();
+           }
+           vec.insert(vec.begin() + i - 1, tmp_st);
+           continue;
+        }
+        i++;
+    }
+
+    i = 3;
+    while (i < vec.size())
+    {
+        if(vec[i] == "+") {   
+           res =  std::stod(for_Eval(vec[i - 1],for_, table)) + std::stod(for_Eval(vec[i + 1], for_, table));
+           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);
+           std::string tmp_st = std::to_string(res);
+           while (tmp_st.back() == '0') {
+                tmp_st.pop_back();
+           }          
+           if (tmp_st.back() == '.'){
+                tmp_st.pop_back();
+           }
+           vec.insert(vec.begin() + i - 1, tmp_st);
+           continue;
+        }
+        
+
+        if(vec[i] == "-") {  
+           res =  std::stod(for_Eval(vec[i - 1],for_, table)) - std::stod(for_Eval(vec[i + 1],for_, table));
+           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);
+           std::string tmp_st = std::to_string(res);
+           while (tmp_st.back() == '0') {
+                tmp_st.pop_back();
+           }   
+           if (tmp_st.back() == '.'){
+                tmp_st.pop_back();
+           }       
+           vec.insert(vec.begin() + i - 1, tmp_st);
+           continue;
+        }
+        i++;
+    }
+
+    i = 3;
+    while (i < vec.size())
+    {
+        if(vec[i] == "!=") {   
+           result =  std::stod(for_Eval(vec[i - 1],for_, table)) != std::stod(for_Eval(vec[i + 1], for_, table));
+           if (result == 0) {
+               True_False  = "false";
+           }else{
+                True_False = "true";
+           }
+           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);
+           vec.insert(vec.begin() + i - 1, True_False);
+           continue;
+        }
+
+        if(vec[i] == "<=") {          
+           result =  std::stod(for_Eval(vec[i - 1],for_, table)) <= std::stod(for_Eval(vec[i + 1],for_, table));
+           if (result == 0) {
+               True_False  = "false";
+           }else{
+                True_False = "true";
+           }
+           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);
+           vec.insert(vec.begin() + i - 1, True_False);
+           continue;
+        }
+
+        if(vec[i] == ">=") {           
+           result =  std::stod(for_Eval(vec[i - 1],for_, table)) >= std::stod(for_Eval(vec[i + 1],for_, table));
+           if (result == 0) {
+               True_False  = "false";
+           }else{
+                True_False = "true";
+           }
+           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);         
+           vec.insert(vec.begin() + i - 1, True_False);
+           continue;
+        }
+
+        if(vec[i] == "<") {
+           result =  std::stod(for_Eval(vec[i - 1],for_, table)) < std::stod(for_Eval(vec[i + 1],for_, table));
+           if (result == 0) {
+               True_False  = "false";
+           }else{
+                True_False = "true";
+           }
+           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);         
+           vec.insert(vec.begin() + i - 1, True_False);
+           continue;
+        }
+
+        if(vec[i] == ">") {   
+           result = std::stod(for_Eval(vec[i - 1],for_, table)) > std::stod(for_Eval(vec[i + 1],for_, table));
+           if (result == 0) {
+               True_False  = "false";
+           }else{
+                True_False = "true";
+           }
+           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);        
+           vec.insert(vec.begin() + i - 1, True_False);
+           continue;
+        }
+        ++i;
+    }   
+}
+
 void Syntax::resolve_if_expr(std::vector<std::string>& vec, Table& table)
 {
 
@@ -364,23 +664,14 @@ void Syntax::resolve_if_expr(std::vector<std::string>& vec, Table& table)
     {
         if(vec[i] == "*") {        
            res =  std::stod(Eval(vec[i - 1], table)) * std::stod(Eval(vec[i + 1], table));
-           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);
-        //    std::string tmp_st = std::to_string(res);
-        //    while (tmp_st.back() == '0') {
-        //         tmp_st.pop_back();
-        //    }          
+           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);        
            vec.insert(vec.begin() + i - 1, std::to_string(res));
         }
         if(vec[i] == "/") {        
            res =  std::stod(Eval(vec[i - 1], table)) / std::stod(Eval(vec[i + 1], table));
-           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);
-        //    std::string tmp_st = std::to_string(res);
-        //    while (tmp_st.back() == '0') {
-        //         tmp_st.pop_back();
-        //    }          
+           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);          
            vec.insert(vec.begin() + i - 1, std::to_string(res));
         }
-
         ++i;
     }
 
@@ -389,21 +680,13 @@ void Syntax::resolve_if_expr(std::vector<std::string>& vec, Table& table)
     {
         if(vec[i] == "+") {   
            res =  std::stod(Eval(vec[i - 1], table)) + std::stod(Eval(vec[i + 1], table));
-           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);
-        //    std::string tmp_st = std::to_string(res);
-        //    while (tmp_st.back() == '0') {
-        //         tmp_st.pop_back();
-        //    }          
+           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);         
            vec.insert(vec.begin() + i - 1, std::to_string(res));
         }
     
         if(vec[i] == "-") {  
            res =  std::stod(Eval(vec[i - 1], table)) - std::stod(Eval(vec[i + 1], table));
-           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);
-        //    std::string tmp_st = std::to_string(res);
-        //    while (tmp_st.back() == '0') {
-        //         tmp_st.pop_back();
-        //    }          
+           vec.erase(vec.begin() + i - 1, vec.begin() + i + 2);         
            vec.insert(vec.begin() + i - 1, std::to_string(res));
         }
         ++i;
@@ -479,24 +762,17 @@ void Syntax::resolve_if_expr(std::vector<std::string>& vec, Table& table)
         }
         ++i;
     }   
-
-    // for (size_t i = 0; i < vec.size(); i++) {
-    //     if (vec[i] == "}"){
-    //         IF_stack.pop_back();
-    //         return;
-    //     }
-    // }
 }
 
 std::string Syntax::if_else_Eval(std::string unresolved_val, If_Else& if_else_table, Table& table)
 {   
 
-    for (size_t i = 0; i < if_else_table.Tab.size(); i++) { //ete localum ka uremn da veradarcru
+    for (size_t i = 0; i < if_else_table.Tab.size(); ++i) { //ete localum ka uremn da veradarcru
         if (unresolved_val == if_else_table.Tab[i].name) {
             return if_else_table.Tab[i].value;
         }
     }
-    for (size_t i = 0; i < table.Tab.size(); i++) {// ays depqum globalum nayi ete ka veradarcru
+    for (size_t i = 0; i < table.Tab.size(); ++i) { // ays depqum globalum nayi ete ka veradarcru
         if (unresolved_val == table.Tab[i].name) {
             return table.Tab[i].value;
         }
@@ -505,6 +781,7 @@ std::string Syntax::if_else_Eval(std::string unresolved_val, If_Else& if_else_ta
     return unresolved_val;
 }
 
+
 void Syntax::resolve_if_body_variable(std::vector<std::string>& vec, Table& table, If_Else& if_else_table)
 {   
     bool flag1 = false;
@@ -512,7 +789,7 @@ void Syntax::resolve_if_body_variable(std::vector<std::string>& vec, Table& tabl
         for (size_t i = 0; i < if_else_table.Tab.size(); i++) {
             if (vec[2] == if_else_table.Tab[i].name) {
                 vec[2] =  if_else_table.Tab[i].value;
-                flag1 = true;// ete ifi tablum kar apa veradarcnum e true
+                flag1 = true;// ete ifi tableum kar apa veradarcnum e true
             }            
    
         }  
@@ -529,7 +806,7 @@ void Syntax::resolve_if_body_variable(std::vector<std::string>& vec, Table& tabl
     double res{};
     bool result{};
     std::string True_False{};
-    int i  = 3;
+    int i = 3;
     while (i < vec.size())
     {
         if(vec[i] == "*") { 
@@ -543,7 +820,6 @@ void Syntax::resolve_if_body_variable(std::vector<std::string>& vec, Table& tabl
                 tmp_st.pop_back();
            }    
            vec.insert(vec.begin() + i - 1, tmp_st);
-           //i -= 2;
            continue;
         }
         if(vec[i] == "/") {     
@@ -559,7 +835,6 @@ void Syntax::resolve_if_body_variable(std::vector<std::string>& vec, Table& tabl
            vec.insert(vec.begin() + i - 1, tmp_st);
            continue;
         }
-
         i++;
     }
 

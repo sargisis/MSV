@@ -19,7 +19,7 @@ public:
     
 public:
 
-    Table();
+    Table() = default;
     ~Table(){}
 };
 

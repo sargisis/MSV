@@ -13,4 +13,10 @@ otherwise {
     c = 4 + 6
 }
 
+floop i = 0: i < 5: ++i {
+    i = 5
+    x = i 
+    x > i
+}
+
 t = 9
