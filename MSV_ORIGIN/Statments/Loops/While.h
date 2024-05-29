@@ -1,13 +1,13 @@
 #ifndef __WHILE__
 #define __WHILE__
 #include "../../Includes/Liabrary.h"
+#include "../../Table/Table.h"
 
-class While
+class While : public Table
 {
-private:
-    /* data */
+
 public:
-    While(/* args */);
+    While(/* args */) = default;
     ~While();
 };
 

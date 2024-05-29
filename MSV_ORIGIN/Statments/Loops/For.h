@@ -1,13 +1,14 @@
 #ifndef __FOR__
 #define __FOR__
-#include "../../Includes/Liabrary.h"
-#include "../../Table/Table.h"
+#include "../../../Includes/Liabrary.h"
 
-class For : public Table
+class For
 {
+private:
+    /* data */
 public:
-    For() = default;
-    ~For() = default;
+    For(/* args */);
+    ~For();
 };
 
 
