@@ -3,12 +3,12 @@
 #include "../Table/Table.h"
 #include "Syntax.h"
 
-Syntax::Syntax(std::ifstream& write_obj, Table& table, If_Else& if_else_table, While& while_table) // ctor called run function
+Syntax::Syntax(std::ifstream& write_obj, Table& table, If_Else& if_else_table, While& while_table, Input& in,  Output& out) // ctor called run function
 {
-    run(write_obj, table, if_else_table, while_table);
+    run(write_obj, table, if_else_table, while_table, in, out);
 }
 
-void Syntax::run(std::ifstream& write, Table& table, If_Else& if_else_table, While& while_table)
+void Syntax::run(std::ifstream& write, Table& table, If_Else& if_else_table, While& while_table, Input& in, Output& out)
 { 
     std::string line; 
     int flag_if = 8;
@@ -33,6 +33,48 @@ void Syntax::run(std::ifstream& write, Table& table, If_Else& if_else_table, Whi
         vec = Tokenizing(line);// a = 5 ----> [0] = "a" [1] = "=" [2] = "5"
         Syntax_analysis(vec);//valid variable or not
         
+        // new added -----
+
+        // Paint
+
+        if ( (vec[0] == "paint") && (vec[1] == ":") && (vec.size() >= 2) )
+        {
+
+            out.Paint(vec[2]);
+        }
+        else if ( (vec[0] == "paint") && (vec[1] != ":") )
+        {
+            std::cerr << "syntax error: wrong usage of built-in function 'paint'"
+            << std::endl << "   Usage: \"paint : \"" << std::endl;
+            throw;
+        }
+        else if ( vec.size() < 2 )
+        {
+            std::cout << std::endl;
+        }
+
+
+        // Write
+
+        if ( (vec[0] == "write") && (vec[1] == ":") && (vec.size() >= 2) )
+        {
+            out.Write(vec[2]);
+        }
+        else if ( (vec[0] == "write") && (vec[1] != ":") )
+        {
+            std::cerr << "syntax error: wrong usage of built-in function 'write'"
+            << std::endl << "   Usage: \"write : \"" << std::endl;
+            throw;
+        }
+        else if ( vec.size() < 2 )
+        {
+            std::cout << std::endl;
+        }
+
+
+        // ---------------
+
+
         //WLOOP begin
         if (vec[0] == "wloop") {
             resolve_if_expr(vec, table);

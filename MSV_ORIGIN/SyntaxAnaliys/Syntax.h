@@ -5,6 +5,7 @@
 #include "../Table/Table.h"
 #include "../Statments/If_Else_/If_Else.h"
 #include "../Statments/Loops/While.h"
+#include "../InputOutput/InputOutput.h"
 
 
 class Syntax
@@ -15,8 +16,8 @@ class Syntax
     std::vector<std::vector<std::string>> w_line;//wloop-i toxer@ tokenizing exac qcumenq stex
     
 public:
-    Syntax(std::ifstream& write_obj, Table& table, If_Else& if_else_table, While& while_table);
-    void run(std::ifstream& src, Table& table, If_Else& if_else_table, While& while_table); 
+    Syntax(std::ifstream& write_obj, Table& table, If_Else& if_else_table, While& while_table, Input& in, onst Output& out);
+    void run(std::ifstream& src, Table& table, If_Else& if_else_table, While& while_table, Input& in,  Output& out); 
     void Syntax_analysis(std::vector<std::string>& vec);
     void add_space(std::string & line);
     std::vector<std::string> Tokenizing(std::string& line);

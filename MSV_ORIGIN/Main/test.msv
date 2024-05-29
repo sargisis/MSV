@@ -6,6 +6,11 @@ o = 1
 
 x = "hello"
 
+paint : x
+write : b
+paint : "b="
+paint : b
+
 when : o {
     y = 4
    when : 7 != 5 {
@@ -23,5 +28,3 @@ wloop : o > 4 {
     ~o = i + 1
 }
 t = 9
-
-paint : a | k

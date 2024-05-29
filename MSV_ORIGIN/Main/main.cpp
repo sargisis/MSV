@@ -3,6 +3,7 @@
 #include "../Table/Table.h"
 #include "../Statments/If_Else_/If_Else.h"
 #include "../Statments/Loops/While.h"
+#include "../InputOutput/InputOutput.h"
 
 
 // #include "./Tokenizing/Tokenizing.h"
@@ -22,7 +23,9 @@ int main(int argc, char *argv[])
     While while_table;
     If_Else if_else_table;
     Table table;
-    Syntax object(read, table, if_else_table, while_table);
+    Input in(table);
+    Output out(table);
+    Syntax object(read, table, if_else_table, while_table, in, out);
 
     for (size_t i = 0; i < table.Tab.size(); i++) {
         std::cout << "global_name = " << table.Tab[i].name << "         " 
